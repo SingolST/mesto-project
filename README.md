@@ -16,4 +16,4 @@
 
 **Ссылка**
 
-Ссылка на сайт : 
+Ссылка на сайт : https://singolst.github.io/mesto-project/
