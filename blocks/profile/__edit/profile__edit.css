@@ -1,0 +1,29 @@
+.profile__edit {
+    align-self: center;
+    background: inherit;
+    padding: 7px;
+    border: 1px solid #FFFFFF;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 1s ease;
+}
+
+.profile__edit:hover {
+    opacity: .6;
+    transition: opacity 1s ease; 
+}
+
+@media screen and (max-width: 320px) {
+    .profile__edit {
+        width: 7.5px;
+        height: 7.5px;
+        padding: 5.25px;
+        grid-column: 2/3;
+        grid-row: 1;
+    }
+}
