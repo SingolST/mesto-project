@@ -4,3 +4,9 @@
     border-radius: 50%;
     overflow: hidden;
 }
+
+@media screen and (max-width: 768px) {
+    .profile__circle {
+        margin-bottom: 26px;
+    }
+}
