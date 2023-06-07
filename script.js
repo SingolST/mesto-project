@@ -51,17 +51,16 @@ const initialCards = [
   }
 ]; 
 
+
 /*открытие и закрытие popup edit */
 function openModalEdit() {
   popupEdit.classList.add('popup_opened');
-  popupEdit.classList.remove('popup_hidden')
 }
 
 editButton.addEventListener('click', openModalEdit);
 
 
 function closeModalEdit() {    
-  popupEdit.classList.add('popup_hidden')
   popupEdit.classList.remove('popup_opened');
 }
 
@@ -87,13 +86,11 @@ popupForm.addEventListener('submit', handleFormSubmitEdit);
 
 /*открытие просмотра изображения */
 function openModalView() {
-  popupView.classList.remove('popup_hidden')
   popupView.classList.add('popup_opened');
 }
 
 function closeModalView() {
   popupView.classList.remove('popup_opened');
-  popupView.classList.add('popup_hidden')
 }
 
 popupCloseView.addEventListener('click', closeModalView)
@@ -130,7 +127,7 @@ function createCard(elementObj) {
   })
 }
 
-initialCards.forEach((currentValue) => {
+initialCards.reverse().forEach((currentValue) => {
 createCard(currentValue)
 });
 
@@ -154,14 +151,17 @@ popupCloseAdd.addEventListener('click', closeModalAdd)
 function handleFormSubmitAdd(evt) {
   evt.preventDefault();
 
-  initialCards.unshift({
-    'name' : formName.value,
-    'link' : formImageLink.value
-  },[])
+  let name = formName.value;
+  let link = formImageLink.value
+  let newElement = {
+    name,
+    link
+  }
+
+  initialCards.unshift(newElement)
   
-  createCard(initialCards[0])
+  createCard(newElement)
   closeModalAdd();
 }
 
-popupFormAdd.addEventListener('submit', handleFormSubmitAdd); 
-
+popupFormAdd.addEventListener('submit', handleFormSubmitAdd);
