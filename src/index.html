@@ -53,9 +53,9 @@
             <div class="popup__container">
                 <h2 class="popup__title">Новое место</h2>
                 <form class="popup__form" name="addCard" novalidate>
-                    <input class="popup__input" id="nameCard" type="text" placeholder="Название" name="title" minlength='2' maxlength='30'>
+                    <input class="popup__input" id="nameCard" type="text" placeholder="Название" name="title" minlength='2' maxlength='30' required>
                     <span class="popup__input-error" id="nameCard-error"></span>
-                    <input class="popup__input" id="linkCard" type="url" placeholder="Ссылка на картинку" name="image link" minlength="5">
+                    <input class="popup__input" id="linkCard" type="url" placeholder="Ссылка на картинку" name="image link" minlength="5" required>
                     <span class="popup__input-error" id="linkCard-error"></span>
                     <button class="popup__button" type="submit" disabled>Создать</button>
                     <button class="popup__close" type="button" aria-label="Закрыть">
@@ -64,7 +64,7 @@
                 </form>
             </div>
         </section>
-        <section class="popup" id="popup_view">
+        <section class="popup popup_view" id="popup_view">
             <div class="popup__container_view">
                 <img class="popup__image" >
                 <figure class="popup__figure"></figure>
