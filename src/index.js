@@ -1,16 +1,14 @@
 import './styles/index.css';
 
-import { closeModal, openModal, closeByOverlay } from './scripts/modal';
+import { closeModal, openModal} from './scripts/modal';
 import { createCard } from './scripts/card.js';
 import { enableValidation, disableButton } from './scripts/validation';
 
 
 const editButton = document.querySelector('.profile__edit-button');
 const popups = document.querySelectorAll('.popup');
-const popupButtons = document.querySelectorAll('.popup__button')
 
 const popupEdit = document.querySelector('#popup_edit');
-const popupButtonEdit = popupEdit.querySelector('.popup__button')
 const popupFormEdit = popupEdit.querySelector('.popup__form');
 const popupName = popupEdit.querySelector('#nameProfile');
 const popupJob = popupEdit.querySelector('#jobProfile');
@@ -68,9 +66,18 @@ const initialCards = [
 for (let i = 0; i < popups.length; i++) {
   if (popups[i].id === 'popup_edit') {
     const popupClose = popups[i].querySelector('.popup__close');
+    const popupInputs = popups[i].querySelectorAll('.popup__input')
     editButton.addEventListener('click', () => {
       openModal(popups[i])
-      closeByOverlay(popups[i])
+      popupInputs.forEach((element) => {
+        if (element.id === 'nameProfile') {
+          element.value = titleProfile.innerText;
+        }
+        if (element.id === 'jobProfile') {
+          element.value = subtitleProfile.innerText;
+        }
+      })
+      enableValidation(settings)
     })
 
     popupClose.addEventListener('click', () => closeModal(popups[i]));
@@ -88,11 +95,6 @@ for (let i = 0; i < popups.length; i++) {
   }
 }
 
-/*открытие и закрытие popup edit */
-
-popupName.value = titleProfile.innerText
-popupJob.value = subtitleProfile.innerText
-
 /* отправка формы */
 function handleFormSubmitEdit(evt) {
   evt.preventDefault();
@@ -100,7 +102,7 @@ function handleFormSubmitEdit(evt) {
   titleProfile.textContent = popupName.value;
   subtitleProfile.textContent = popupJob.value;
 
-  popupButtonEdit.addEventListener('click', closeModal(popupEdit));
+  closeModal(popupEdit);
 }
 
 popupFormEdit.addEventListener('submit', handleFormSubmitEdit);
@@ -129,12 +131,13 @@ function handleFormSubmitAdd(evt) {
   disableButton(evt.submitter);
   renderCard(createCard(newElement));
   popupFormAdd.reset()
-  formCreate.addEventListener('click', closeModal(popupAdd));
+  closeModal(popupAdd);
 }
 
 popupFormAdd.addEventListener('submit', handleFormSubmitAdd);
 
 // checked valid
+
 export const settings = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -143,6 +146,4 @@ export const settings = {
   inactiveButtonClass: 'popup__button_disabled'
 }
 
-
-
-enableValidation(settings)
+enableValidation(settings);

@@ -22,11 +22,10 @@ function createCard(elementObj) {
     elementLike.addEventListener('click', function(evt) {
       evt.target.classList.toggle('element__like_active')
     })
-    // открытие просмотра изображения
-    elementImage.addEventListener('click', () => openModal(popupView));
   
     //наполнение для просмотра изображения
     elementImage.addEventListener('click', function () {
+      openModal(popupView)
       elementPopupImage.setAttribute('src', elementImage.getAttribute('src'));
       elementPopupImage.setAttribute('alt', elementImage.getAttribute('alt'));
       elementPopupFigure.textContent = elementTitle.textContent;
