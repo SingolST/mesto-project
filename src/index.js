@@ -1,28 +1,37 @@
 import './styles/index.css';
 
-import { closeModal, openModal} from './scripts/modal';
+import { closeModal, openModal } from './scripts/modal';
 import { createCard } from './scripts/card.js';
 import { enableValidation, disableButton } from './scripts/validation';
-
+import { getUser, getCards, patchProfile, postCard, patchAvatar } from './scripts/api.js';
 
 const editButton = document.querySelector('.profile__edit-button');
 const popups = document.querySelectorAll('.popup');
+
+const avatarEdit = document.querySelector('.profile__circle');
+const popupAvatarEdit = document.querySelector('#popup_avatar-edit');
+const popupAvatarButtonSubmit = popupAvatarEdit.querySelector('.popup__button');
+const avatarProfile = document.querySelector('.profile__avatar');
+const avatarUrl = document.querySelector('#avatarUrl')
 
 const popupEdit = document.querySelector('#popup_edit');
 const popupFormEdit = popupEdit.querySelector('.popup__form');
 const popupName = popupEdit.querySelector('#nameProfile');
 const popupJob = popupEdit.querySelector('#jobProfile');
+const popupEditButtonSubmit = popupEdit.querySelector('.popup__button')
 
 const profile = document.querySelector('.profile__info');
 const titleProfile = profile.querySelector('.profile__title');
 const subtitleProfile = profile.querySelector('.profile__subtitle');
-const popupAdd = document.querySelector('#popup_add');
-const formCreate = popupAdd.querySelector('.popup__button');
 
+
+
+const popupAdd = document.querySelector('#popup_add');
 const buttonAdd = document.querySelector('.profile__add-button');
 const popupFormAdd = popupAdd.querySelector('.popup__form');
 const formName = popupAdd.querySelector('#nameCard');
 const formImageLink = popupAdd.querySelector('#linkCard');
+const popupAddBtnSubmit = popupAdd.querySelector('.popup__button')
 
 const content = document.querySelector('.content');
 const cardsContent = content.querySelector('.elements');
@@ -30,36 +39,28 @@ export const popupView = document.querySelector('#popup_view');
 export const elementPopupImage = popupView.querySelector('.popup__image');
 export const elementPopupFigure = popupView.querySelector('.popup__figure');
 
+let userId
+let avatarUser
 
-const formInputs = document.querySelectorAll('.popup__input')
+// // Вывод карточек и получение юзера
 
-/*карточки из коробки */
-const initialCards = [
-  {
-    name: 'Архыз',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
-  {
-    name: 'Челябинская область',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    name: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    name: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    name: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {
-    name: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-];
+Promise.all([getCards(), getUser()])
+  .then(([allCards, userData]) => {
+    userId = userData._id;
+    avatarUser = userData.avatar
+
+    titleProfile.textContent = userData.name;
+    subtitleProfile.textContent = userData.about;
+    avatarProfile.src = avatarUser;
+
+    allCards.forEach(item => {
+      const newCard = createCard(item, userId);
+      cardsContent.prepend(newCard);
+    })
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 // Навешивание событий клика через массив popups
 
@@ -93,14 +94,58 @@ for (let i = 0; i < popups.length; i++) {
 
     popupClose.addEventListener('click', () => closeModal(popups[i]));
   }
+  if (popups[i].id === 'popup_avatar-edit') {
+    const popupClose = popups[i].querySelector('.popup__close');
+    avatarEdit.addEventListener('click', () => openModal(popups[i]))
+
+    popupClose.addEventListener('click', () => closeModal(popups[i]));
+  }
 }
 
-/* отправка формы */
+// модальное окно редактировать аватар
+
+function handleFormSubmitAvatarEdit(evt) {
+  evt.preventDefault();
+
+  renderLoading(true, popupAvatarButtonSubmit)
+
+  patchAvatar(avatarUrl.value)
+    .then((res) => {
+      avatarUser = res.avatar
+      avatarProfile.src = avatarUser;
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(()=>{
+      renderLoading(false)
+      popupAvatarButtonSubmit.textContent ='Сохранить'
+    })
+
+  
+  popupFormAdd.reset()
+  closeModal(popupAvatarEdit);
+
+}
+
+popupAvatarEdit.addEventListener('submit', handleFormSubmitAvatarEdit)
+
+/* отправка формы и отправка на сервер */
 function handleFormSubmitEdit(evt) {
   evt.preventDefault();
 
+  renderLoading(true, popupEditButtonSubmit)
+
   titleProfile.textContent = popupName.value;
   subtitleProfile.textContent = popupJob.value;
+  patchProfile(popupName.value, popupJob.value)
+  .catch((err)=> {
+    console.log(err)
+  })
+  .finally(() => {
+    renderLoading(false)
+    popupEditButtonSubmit.textContent ='Сохранить'
+  })
 
   closeModal(popupEdit);
 }
@@ -111,25 +156,36 @@ popupFormEdit.addEventListener('submit', handleFormSubmitEdit);
 function renderCard(item) {
   cardsContent.prepend(item);
 }
-/* перебор массива и создание карточек */
-initialCards.reverse().forEach((currentValue) => {
-  renderCard(createCard(currentValue))
-});
 
 /* Добавление карточки */
 
 function handleFormSubmitAdd(evt) {
   evt.preventDefault();
 
+  
   const name = formName.value;
   const link = formImageLink.value
   const newElement = {
     name,
-    link
+    link,
+    likes: []
   }
 
+  renderLoading(true, popupAddBtnSubmit);
+  postCard(newElement)
+    .then((res) => {
+      renderCard(createCard(res, userId))
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      renderLoading(false)
+      popupAddBtnSubmit.textContent ='Создать'
+    })
+
+
   disableButton(evt.submitter);
-  renderCard(createCard(newElement));
   popupFormAdd.reset()
   closeModal(popupAdd);
 }
@@ -147,3 +203,9 @@ export const settings = {
 }
 
 enableValidation(settings);
+
+function renderLoading (isLoading, btn) {
+  if (isLoading) {
+    btn.textContent = 'Сохранение...'
+}
+}

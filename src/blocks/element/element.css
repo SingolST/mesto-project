@@ -3,4 +3,6 @@
     background-color:  white;
     min-width: 282px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }

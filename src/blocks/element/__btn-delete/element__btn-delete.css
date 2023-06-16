@@ -1,4 +1,5 @@
 .element__btn-delete {
+    display: block;
     position: absolute;
     max-width: 18px;
     max-height: 19px;

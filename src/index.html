@@ -15,6 +15,7 @@
             <section class="profile">
                 <div class="profile__circle">
                     <img src="<%=require('./images/image.jpg')%>" alt="Аватар профайла" class="profile__avatar">
+                    <img src="<%=require('./images/avatarEdit.svg')%>" alt="Редактировать аватар профайла" class="profile__avatar-edit">
                 </div>
                 <div class="profile__info">
                     <h1 class="profile__title">Жак Ив Кусто</h1>
@@ -72,7 +73,20 @@
                     <img class="popup__close-image" src="<%=require('./images/close_icon.svg')%>" alt="Закрыть форму">
                 </button>
             </div>
-        </section>        
+        </section>  
+        <section class="popup" id="popup_avatar-edit">
+            <div class="popup__container">
+                <h2 class="popup__title">Новое место</h2>
+                <form class="popup__form" name="avatarForm" novalidate>
+                    <input class="popup__input" id="avatarUrl" type="url" placeholder="Введите url изображения аватара" name="avatar" minlength="5" required>
+                    <span class="popup__input-error" id="avatarUrl-error"></span>
+                    <button class="popup__button" type="submit">Создать</button>
+                    <button class="popup__close" type="button" aria-label="Закрыть">
+                        <img class="popup__close-image" src="<%=require('./images/close_icon.svg')%>" alt="Закрыть форму">
+                    </button>
+                </form>
+            </div>
+        </section>      
     </div>
 
     <template id="element">
@@ -80,7 +94,10 @@
             <img class="element__image">
             <div class="element__info">
                 <h2 class="element__title"></h2>
-                <button class="element__like" type="button" aria-label="Лайк"></button>
+                <div class="element__like-wrapper">
+                    <button class="element__like" type="button" aria-label="Лайк"></button>
+                    <span class="element_like-span"></span>
+                </div>
             </div>
             <img class="element__btn-delete" src="<%=require('./images/Trash.svg')%>" alt="Корзина">
         </article>

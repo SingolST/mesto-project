@@ -26,4 +26,4 @@ function closeByOverlay(evt) {
   }
 }
 
-export { openModal, closeModal} 
+export { openModal, closeModal } 

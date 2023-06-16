@@ -3,6 +3,17 @@
     height: 120px;
     border-radius: 50%;
     overflow: hidden;
+    position: relative;
+    background-color: black;
+}
+
+.profile__circle:hover .profile__avatar-edit {
+    opacity: 1;
+    transition: opacity 1s ;
+}
+.profile__circle:hover .profile__avatar {
+    opacity: 0.2;
+    transition: opacity 1s;
 }
 
 @media screen and (max-width: 768px) {
