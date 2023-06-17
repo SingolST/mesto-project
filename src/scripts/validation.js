@@ -22,7 +22,7 @@ function showInputError(input, settings, errorMessage) {
     }
   }
   
-  function checkFormValidity(form, buttonSubmit) {
+  export function checkFormValidity(form, buttonSubmit) {
     if (form.checkValidity()) {
       enableButton(buttonSubmit);
     } else {

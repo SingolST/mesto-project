@@ -2,7 +2,7 @@ import './styles/index.css';
 
 import { closeModal, openModal } from './scripts/modal';
 import { createCard } from './scripts/card.js';
-import { enableValidation, disableButton } from './scripts/validation';
+import { enableValidation, disableButton, checkFormValidity } from './scripts/validation';
 import { getUser, getCards, patchProfile, postCard, patchAvatar } from './scripts/api.js';
 
 const editButton = document.querySelector('.profile__edit-button');
@@ -136,7 +136,6 @@ function handleFormSubmitEdit(evt) {
 
   renderLoading(true, popupEditButtonSubmit)
 
-  
   patchProfile(popupName.value, popupJob.value)
     .then((res) => {
       titleProfile.textContent = popupName.value;
@@ -175,6 +174,7 @@ function handleFormSubmitAdd(evt) {
   }
 
   renderLoading(true, popupAddBtnSubmit);
+
   postCard(newElement)
     .then((res) => {
       renderCard(createCard(res, userId))
@@ -204,6 +204,7 @@ export const settings = {
 }
 
 enableValidation(settings);
+popupEditButtonSubmit.disabled = false
 
 function renderLoading(isLoading, btn) {
   if (isLoading) {
