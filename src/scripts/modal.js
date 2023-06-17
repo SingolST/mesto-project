@@ -21,8 +21,7 @@ function closeByEsc(evt) {
 
 function closeByOverlay(evt) {
   if (evt.currentTarget === evt.target) {
-    const popup = document.querySelector('.popup_opened');
-    closeModal(popup);
+    closeModal(evt.target);
   }
 }
 

@@ -53,7 +53,7 @@ Promise.all([getCards(), getUser()])
     subtitleProfile.textContent = userData.about;
     avatarProfile.src = avatarUser;
 
-    allCards.forEach(item => {
+    allCards.reverse().forEach(item => {
       const newCard = createCard(item, userId);
       cardsContent.prepend(newCard);
     })
@@ -78,7 +78,6 @@ for (let i = 0; i < popups.length; i++) {
           element.value = subtitleProfile.innerText;
         }
       })
-      enableValidation(settings)
     })
 
     popupClose.addEventListener('click', () => closeModal(popups[i]));
@@ -113,19 +112,17 @@ function handleFormSubmitAvatarEdit(evt) {
     .then((res) => {
       avatarUser = res.avatar
       avatarProfile.src = avatarUser;
+
+      closeModal(popupAvatarEdit);
+      popupFormAdd.reset()
     })
     .catch((err) => {
       console.log(err)
     })
-    .finally(()=>{
+    .finally(() => {
       renderLoading(false)
-      popupAvatarButtonSubmit.textContent ='Сохранить'
+      popupAvatarButtonSubmit.textContent = 'Сохранить'
     })
-
-  
-  popupFormAdd.reset()
-  closeModal(popupAvatarEdit);
-
 }
 
 popupAvatarEdit.addEventListener('submit', handleFormSubmitAvatarEdit)
@@ -136,18 +133,21 @@ function handleFormSubmitEdit(evt) {
 
   renderLoading(true, popupEditButtonSubmit)
 
-  titleProfile.textContent = popupName.value;
-  subtitleProfile.textContent = popupJob.value;
+  
   patchProfile(popupName.value, popupJob.value)
-  .catch((err)=> {
-    console.log(err)
-  })
-  .finally(() => {
-    renderLoading(false)
-    popupEditButtonSubmit.textContent ='Сохранить'
-  })
+    .then((res) => {
+      titleProfile.textContent = popupName.value;
+      subtitleProfile.textContent = popupJob.value;
+      closeModal(popupEdit);
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      renderLoading(false)
+      popupEditButtonSubmit.textContent = 'Сохранить'
+    })
 
-  closeModal(popupEdit);
 }
 
 popupFormEdit.addEventListener('submit', handleFormSubmitEdit);
@@ -162,7 +162,7 @@ function renderCard(item) {
 function handleFormSubmitAdd(evt) {
   evt.preventDefault();
 
-  
+
   const name = formName.value;
   const link = formImageLink.value
   const newElement = {
@@ -175,19 +175,17 @@ function handleFormSubmitAdd(evt) {
   postCard(newElement)
     .then((res) => {
       renderCard(createCard(res, userId))
+      disableButton(evt.submitter);
+      closeModal(popupAdd);
+      popupFormAdd.reset();
     })
     .catch((err) => {
       console.log(err)
     })
     .finally(() => {
       renderLoading(false)
-      popupAddBtnSubmit.textContent ='Создать'
+      popupAddBtnSubmit.textContent = 'Создать'
     })
-
-
-  disableButton(evt.submitter);
-  popupFormAdd.reset()
-  closeModal(popupAdd);
 }
 
 popupFormAdd.addEventListener('submit', handleFormSubmitAdd);
@@ -204,8 +202,8 @@ export const settings = {
 
 enableValidation(settings);
 
-function renderLoading (isLoading, btn) {
+function renderLoading(isLoading, btn) {
   if (isLoading) {
     btn.textContent = 'Сохранение...'
-}
+  }
 }
