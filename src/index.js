@@ -11,8 +11,10 @@ const popups = document.querySelectorAll('.popup');
 const avatarEdit = document.querySelector('.profile__circle');
 const popupAvatarEdit = document.querySelector('#popup_avatar-edit');
 const popupAvatarButtonSubmit = popupAvatarEdit.querySelector('.popup__button');
+const popupAvatarForm = popupAvatarEdit.querySelector('.popup__form')
 const avatarProfile = document.querySelector('.profile__avatar');
 const avatarUrl = document.querySelector('#avatarUrl')
+
 
 const popupEdit = document.querySelector('#popup_edit');
 const popupFormEdit = popupEdit.querySelector('.popup__form');
@@ -113,8 +115,9 @@ function handleFormSubmitAvatarEdit(evt) {
       avatarUser = res.avatar
       avatarProfile.src = avatarUser;
 
+      popupAvatarForm.reset();
+      disableButton(evt.submitter);
       closeModal(popupAvatarEdit);
-      popupFormAdd.reset()
     })
     .catch((err) => {
       console.log(err)
